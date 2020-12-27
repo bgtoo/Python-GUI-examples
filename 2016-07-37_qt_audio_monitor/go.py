@@ -11,7 +11,6 @@ from utils import new_jitters, new_update_dir
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
-#sys.path.append('../../../Google Drive/sempervivum/')
 from loaders import load_model_pararms
 from WGANGP_app import WGANGP
 
@@ -64,7 +63,7 @@ class ExampleApp(QtGui.QMainWindow, ui_main.Ui_MainWindow):
         self.z *= self.decay
         self.fbin = self.ear.rate / 2 / self.ear.fftx.shape[0]
         self.step = int(max(z_dims * self.fbin, 1000*self.freqSpinBox.value())/self.fbin // z_dims)
-        #self.a = [self.ear.fft[i * self.step]/self.fnorm for i in range(z_dims)]
+        # self.a = [self.ear.fft[i * self.step]/self.fnorm for i in range(z_dims)]
         delta_fft = self.ear.fft - self.fft_old
         self.a = [abs(delta_fft[i * self.step] / self.fnorm) for i in range(z_dims)]
         self.z += self.a * self.d
@@ -102,6 +101,7 @@ class ExampleApp(QtGui.QMainWindow, ui_main.Ui_MainWindow):
         self.exitButton.clicked.connect(self.close)
 
         QtCore.QTimer.singleShot(1, self.update) # QUICKLY repeat
+
 
 if __name__=="__main__":
     app = QtGui.QApplication(sys.argv)
