@@ -42,9 +42,9 @@ class ExampleApp(QtGui.QMainWindow, ui_main.Ui_MainWindow):
         self.width = 256
         self.channel = 3
         self.bytesPerLine = 3 * self.width
-        self.fnorm = 100000
+        self.fnorm = 500000
         self.cutoff = 3
-        self.decay = 0.9
+        self.decay = 0.6
         self.z = np.clip(np.random.normal(loc=0.0, scale=1, size=(1, z_dims))[0],-self.cutoff,self.cutoff)
         self.a = np.zeros(shape=((1, z_dims)))[0]
         self.d = np.sign(np.random.normal(loc=0.0, scale=1, size=(1, z_dims))[0])
@@ -60,12 +60,12 @@ class ExampleApp(QtGui.QMainWindow, ui_main.Ui_MainWindow):
     def updatez(self):
         if len(self.fft_old) == 1:
             self.fft_old = self.ear.fft
-        self.z *= self.decay
+        self.a *= self.decay
         self.fbin = self.ear.rate / 2 / self.ear.fftx.shape[0]
         self.step = int(max(z_dims * self.fbin, 1000*self.freqSpinBox.value())/self.fbin // z_dims)
-        # self.a = [self.ear.fft[i * self.step]/self.fnorm for i in range(z_dims)]
-        delta_fft = self.ear.fft - self.fft_old
-        self.a = [abs(delta_fft[i * self.step] / self.fnorm) for i in range(z_dims)]
+        self.a += [self.ear.fft[i * self.step]/self.fnorm for i in range(z_dims)]
+        #delta_fft = self.ear.fft - self.fft_old
+        #self.a = [abs(delta_fft[i * self.step] / self.fnorm) for i in range(z_dims)]
         self.z += self.a * self.d
         for i in range(z_dims):
             if self.z[i] > self.cutoff:
